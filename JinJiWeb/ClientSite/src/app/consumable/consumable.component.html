@@ -1,0 +1,81 @@
+<div class="page container-fluid">
+  <div class="row page-header">
+  </div>
+  <div class="row page-body">
+    <div class="col-6">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-4">
+              <h5>耗材清單</h5>
+            </div>
+            <div class="col-4">
+              <select class="form-control" id="ym" name="ym" [(ngModel)]="currentMonth" (change)="loadConsumable()">
+                <option value=undefined>選擇月份</option>
+                <option *ngFor="let date of dateService.getYmList() | async" [ngValue]="date">{{date.year}}/{{date.month}}</option>
+              </select>
+            </div>
+            <div class="col-4 text-right pr-0">
+              <button type="button" class="btn btn-info" (click)="newConsumable()">新增耗材</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="list-group">
+            <button *ngFor="let c of consumables$ | async" type="button" class="list-group-item list-group-item-action"
+              (click)="showDetail(c)">{{c.name}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-6">
+              <h5>耗材細節</h5>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <form #cForm=ngForm>
+            <div class="form-group">
+              <label for="price">購買日期</label>
+              <input type="date" class="form-control" id="price" name="price"
+                [ngModel]="cConsumable.date|date:'yyyy-MM-dd'" (input)="cConsumable.date=$event.target.value"
+                placeholder="1911/1/1" required>
+            </div>
+            <div class="form-group">
+              <label for="name">名稱</label>
+              <input type="text" class="form-control" id="name" name="name" [(ngModel)]="cConsumable.name"
+                placeholder="名稱" required>
+            </div>
+            <div class="form-group">
+              <label for="name">類型</label>
+              <select class="form-control" id="type" name="type" [(ngModel)]="cConsumable.type" required>
+                <option *ngFor="let type of consumableService.getConsumableTypes() | async" [value]="type.value">
+                  {{type.name}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="description">敘述</label>
+              <input type="text" class="form-control" id="description" name="description"
+                [(ngModel)]="cConsumable.description" placeholder="敘述">
+            </div>
+            <div class="form-group">
+              <label for="cost">成本</label>
+              <input type="number" class="form-control" id="cost" name="cost" [(ngModel)]="cConsumable.cost"
+                placeholder="成本" required>
+            </div>
+            <div class="form-group text-right">
+              <button type="button" [disabled]="!cForm.form.valid" class="btn btn-primary"
+                (click)="save(cForm.form)">儲存</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
