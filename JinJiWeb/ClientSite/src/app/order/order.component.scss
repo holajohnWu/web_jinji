@@ -4,3 +4,32 @@
         border: 1px solid white;
     }
 }
+
+.btn-product, .btn-order-product {
+    width: 5rem;
+    height: 5rem;
+}
+
+.btn-order-product {
+    background-color: #ffc107;
+    color: white;
+    border-color: white;
+}
+
+.card-body {
+    overflow-x: scroll;
+    .p-container {
+        display: inline-flex;
+        min-height: 5rem;
+    }
+
+    .o-container {
+        display: inline-flex;
+        min-height: 20rem;
+        
+        .card {
+            min-width: 10rem;
+            height: 20rem;
+        }
+    }
+}

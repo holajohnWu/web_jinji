@@ -1,24 +1,65 @@
-<div class="page container-fluid">
-  <div class="row page-header bg-orange text-center">
-    <div class="col col-2">
-      <label>菜單</label>
+<div class="page container-fluid p-0 m-0">
+  <div class="row page-body bg-orange mx-0">
+    <div class="col-12">
+      <input type="date" class="form-control" id="cDate" name="cDate"
+        [ngModel]="cDate|date:'yyyy-MM-dd'" (input)="onDateChange($event.target.value)"
+        placeholder="1911/1/1">
     </div>
-    <div class="col col-2">
-      <label>訂單</label>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <label>菜單</label>
+        </div>
+        <div class="card-body p-0">
+          <div class="p-container">
+            <div class="list-group list-group-horizontal">
+              <button *ngFor="let p of productService.getAll() | async" type="button"
+                class="btn btn-outline-warning" (click)="insertProduct(p)">{{p.name}}</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="col col-8">
-      <label>待完成餐點</label>
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <label>訂單</label>
+        </div>
+        <div class="card-body p-0">
+          <div class="p-container">
+            <div class="list-group list-group-horizontal">
+              <button *ngFor="let p of cOrder.products; let i=index" type="button"
+                class="btn btn-warning" (click)="removeProduct(i)">{{p.name}}</button>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-right">
+          <button class="btn btn-primary" (click)="saveOrder()">
+            送出訂單
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="row page-body bg-orange">
-    <div class="col col-2">
-      <label>123</label>
-    </div>
-    <div class="col col-2">
-
-    </div>
-    <div class="col col-8 bg-light">
-
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <label>訂單記錄</label>
+        </div>
+        <div class="card-body p-0">
+          <div class="o-container">
+            <div *ngFor="let o of cOrders; let i=index" class="card">
+              <div class="card-body p-0 overflow-auto">
+                <ul class="list-group">
+                  <li *ngFor="let p of o.products" class="list-group-item">{{p.name}}</li>
+                </ul>
+              </div>
+              <div class="card-footer">
+                <button class="btn btn-danger" (click)="removeOrder(i, o)">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

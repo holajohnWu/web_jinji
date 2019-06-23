@@ -34,14 +34,19 @@ h6 {
 
     .page-header {}
 
-    .page-body {}
+    .page-body {
+        width: 100vw;
+
+        .col-12 {
+            padding-right: 0;
+            padding-left: 0;
+        }
+    }
 }
 
-.bg-orange {
-    background-color: #ff9900;
-    color: white;
-    
-    .col {
-        border: 1px solid white;
+.list-group {
+    .btn {
+        width: 7rem;
+        margin-right: 2px;
     }
 }
