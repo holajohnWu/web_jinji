@@ -33,10 +33,17 @@
             </div>
           </div>
         </div>
-        <div class="card-footer text-right">
-          <button class="btn btn-primary" (click)="saveOrder()">
-            送出訂單
-          </button>
+        <div class="card-footer">
+          <div class="row">
+            <div class="col-10">
+              <h5>$: {{cOrder.totalPrice}}</h5>
+            </div>
+            <div class="col-2 text-right">
+              <button class="btn btn-primary" (click)="saveOrder()">
+                送出訂單
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -47,13 +54,16 @@
         </div>
         <div class="card-body p-0">
           <div class="o-container">
-            <div *ngFor="let o of cOrders; let i=index" class="card">
+            <div *ngFor="let o of cOrders$ | async; let i=index" class="card">
+              <div class="card-header text-center">
+                {{o.totalPrice}}
+              </div>
               <div class="card-body p-0 overflow-auto">
                 <ul class="list-group">
                   <li *ngFor="let p of o.products" class="list-group-item">{{p.name}}</li>
                 </ul>
               </div>
-              <div class="card-footer">
+              <div class="card-footer text-center">
                 <button class="btn btn-danger" (click)="removeOrder(i, o)">Delete</button>
               </div>
             </div>

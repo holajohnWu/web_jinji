@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { ProductModule } from './product/product.module';
 import { ConsumableModule } from './consumable/consumable.module';
 import { OrderModule } from './order/order.module';
+import { BalanceModule } from './balance/balance.module';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { OrderModule } from './order/order.module';
     ProductModule,
     ConsumableModule,
     OrderModule,
+    BalanceModule,
     AppRoutingModule
   ],
   providers: [],
