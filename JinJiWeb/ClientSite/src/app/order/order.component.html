@@ -1,70 +1,72 @@
 <div class="page container-fluid p-0 m-0">
-  <div class="row page-body bg-orange mx-0">
-    <div class="col-12">
-      <input type="date" class="form-control" id="cDate" name="cDate"
-        [ngModel]="cDate|date:'yyyy-MM-dd'" (input)="onDateChange($event.target.value)"
-        placeholder="1911/1/1">
-    </div>
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <label>菜單</label>
-        </div>
-        <div class="card-body p-0">
-          <div class="p-container">
-            <div class="list-group list-group-horizontal">
-              <button *ngFor="let p of productService.getAll() | async" type="button"
-                class="btn btn-outline-warning" (click)="insertProduct(p)">{{p.name}}</button>
+  <div class="row page-body m-0">
+    <div class="page-body-container">
+      <div class="col-12 p-0">
+        <input type="date" class="form-control" id="cDate" name="cDate"
+          [ngModel]="cDate|date:'yyyy-MM-dd'" (input)="onDateChange($event.target.value)"
+          placeholder="1911/1/1">
+      </div>
+      <div class="col-12 p-0">
+        <div class="card">
+          <div class="card-header">
+            <label>菜單</label>
+          </div>
+          <div class="card-body p-0">
+            <div class="p-container">
+              <div class="list-group list-group-horizontal">
+                <button *ngFor="let p of products$ | async" type="button"
+                  class="btn btn-outline-warning" (click)="insertProduct(p)">{{p.name}}</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <label>訂單</label>
-        </div>
-        <div class="card-body p-0">
-          <div class="p-container">
-            <div class="list-group list-group-horizontal">
-              <button *ngFor="let p of cOrder.products; let i=index" type="button"
-                class="btn btn-warning" (click)="removeProduct(i)">{{p.name}}</button>
+      <div class="col-12 p-0">
+        <div class="card bg-warning text-white">
+          <div class="card-header">
+            <label>訂單</label>
+          </div>
+          <div class="card-body p-0">
+            <div class="p-container">
+              <div class="list-group list-group-horizontal">
+                <button *ngFor="let p of cOrder.orderDetails; let i=index" type="button"
+                  class="btn btn-light" (click)="removeProduct(i)">{{p.name}}</button>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="card-footer">
-          <div class="row">
-            <div class="col-10">
-              <h5>$: {{cOrder.totalPrice}}</h5>
-            </div>
-            <div class="col-2 text-right">
-              <button class="btn btn-primary" (click)="saveOrder()">
-                送出訂單
-              </button>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-10">
+                <h5>$：{{cOrder.totalPrice}}</h5>
+              </div>
+              <div class="col-2 text-right">
+                <button class="btn btn-light" (click)="saveOrder()">
+                  送出訂單
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <label>訂單記錄</label>
-        </div>
-        <div class="card-body p-0">
-          <div class="o-container">
-            <div *ngFor="let o of cOrders$ | async; let i=index" class="card">
-              <div class="card-header text-center">
-                {{o.totalPrice}}
-              </div>
-              <div class="card-body p-0 overflow-auto">
-                <ul class="list-group">
-                  <li *ngFor="let p of o.products" class="list-group-item">{{p.name}}</li>
-                </ul>
-              </div>
-              <div class="card-footer text-center">
-                <button class="btn btn-danger" (click)="removeOrder(i, o)">Delete</button>
+      <div class="col-12 p-0">
+        <div class="card">
+          <div class="card-header">
+            <label>訂單記錄</label>
+          </div>
+          <div class="card-body p-0">
+            <div class="o-container">
+              <div *ngFor="let o of cOrders$ | async; let i=index; let isOddRecord=odd" class="card" [class.text-white]="isOddRecord" [class.bg-secondary]="isOddRecord">
+                <div class="card-header text-center">
+                  {{totalPrice(o)}}
+                </div>
+                <div class="card-body p-0 overflow-auto">
+                  <ul class="list-group">
+                    <li *ngFor="let p of o.orderDetails" class="list-group-item text-dark">{{p.name}}</li>
+                  </ul>
+                </div>
+                <div class="card-footer text-center">
+                  <button class="btn btn-danger" (click)="removeOrder(o.id)">刪除</button>
+                </div>
               </div>
             </div>
           </div>

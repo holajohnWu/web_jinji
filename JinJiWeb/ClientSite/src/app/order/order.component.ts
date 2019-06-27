@@ -5,6 +5,7 @@ import { Order } from '../shared-models/order';
 import { cloneDeep } from 'lodash';
 import { OrderService } from '../shared-services/order.service';
 import { Observable } from 'rxjs';
+import { OrderDetail } from '../shared-models/order-detail';
 
 @Component({
   selector: 'app-order',
@@ -13,16 +14,19 @@ import { Observable } from 'rxjs';
 })
 export class OrderComponent implements OnInit {
 
+  products$: Observable<Product[]>;
+
   cDate = new Date();
   cOrderCount: number = 0;
   cOrder: Order = new Order(this.cDate);
-  cProducts: Product[]; 
+  cProducts: Product[];
   cOrders$: Observable<Order[]>;
 
   constructor(public productService: ProductService,
     private orderService: OrderService) { }
 
   ngOnInit() {
+    this.products$ = this.productService.getAll();
     this.initOrders();
   }
 
@@ -31,12 +35,15 @@ export class OrderComponent implements OnInit {
   }
 
   insertProduct(p: Product) {
-    this.cOrder.products.push(cloneDeep(p));
+    var model = cloneDeep(p) as OrderDetail;
+    delete model['id'];
+
+    this.cOrder.orderDetails.push(model);
   }
 
   removeProduct(i: number) {
-    this.cOrder.products.splice(i, 1);
-  } 
+    this.cOrder.orderDetails.splice(i, 1);
+  }
 
   saveOrder() {
     this.orderService.save(this.cOrder)
@@ -46,14 +53,20 @@ export class OrderComponent implements OnInit {
       });
   }
 
-  removeOrder(i: number, o: Order) {
-    this.orderService.remove(o);
+  removeOrder(id: number) {
+    this.orderService.remove(id)
+      .subscribe(o => {
+        this.initOrders();
+      });
   }
 
   onDateChange(date: string) {
     var dateAry = date.split('-');
-    this.cDate = new Date(parseInt(dateAry[0]), parseInt(dateAry[1]), parseInt(dateAry[2]));
-    // TODO: Refresh orders
+    this.cDate = new Date(parseInt(dateAry[0]), parseInt(dateAry[1]) - 1, parseInt(dateAry[2]));
     this.initOrders();
+  }
+
+  totalPrice(o: Order) {
+    return o.orderDetails.map(p => p.price).reduce((p, r) => p + r, 0);
   }
 }

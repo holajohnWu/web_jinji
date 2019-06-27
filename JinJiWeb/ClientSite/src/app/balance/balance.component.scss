@@ -6,14 +6,10 @@
         height: 100vh;
         
         .card-day {
-            width: 100vw;
-            // height: 20rem;
-
             .o-container {
-                display: inline-flex;
+                display: inline-flex; 
                 
                 .card-o {
-                    width: 10rem;
                     height: 20rem;
                 }
             }

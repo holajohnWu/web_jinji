@@ -1,41 +1,30 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../shared-models/product';
 import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  products: Product[] = [
-    {name: "測試1", price: 100, cost: 10} as Product,
-    {name: "測試2", price: 200, cost: 10} as Product,
-    {name: "測試3", price: 300, cost: 10} as Product,
-    {name: "測試4", price: 400, cost: 10} as Product,
-    {name: "測試5", price: 500, cost: 10} as Product,
-    {name: "測試6", price: 600, cost: 10} as Product,
-    {name: "測試7", price: 700, cost: 10} as Product,
-    {name: "測試8", price: 800, cost: 10} as Product,
-    {name: "測試9", price: 900, cost: 10} as Product,
-    {name: "測試10", price: 1000, cost: 10} as Product,
-    {name: "測試11", price: 1100, cost: 10} as Product
-  ];
+  url = 'api/product'
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
   getAll(): Observable<Product[]> {
-    return of(this.products);
+    return this.httpClient.get<Product[]>(this.url);
   }
 
   save(product: Product): Observable<Product> {
-    if (!product.id) {
-      product.id = Math.floor(Math.random() * 100000000);
-      this.products.push(product);
+    if (product.id) {
+      return this.httpClient.put<Product>(`${this.url}/${product.id}`, JSON.stringify(product));
     } else {
-      var index = this.products.findIndex(p => p.id == product.id);
-      this.products.splice(index, 1, product);
+      return this.httpClient.post<Product>(`${this.url}`, JSON.stringify(product));
     }
+  }
 
-    return of(product);
+  delete(id: number): Observable<boolean> {
+    return this.httpClient.delete<boolean>(`${this.url}/${id}`);
   }
 }

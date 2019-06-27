@@ -1,4 +1,4 @@
-import { Product } from './product';
+import { OrderDetail } from './order-detail';
 
 export class Order {
     id: number;
@@ -16,9 +16,9 @@ export class Order {
         this.day = date.getDate();
     }
 
-    products: Product[] = [];
+    orderDetails: OrderDetail[] = [];
 
     get totalPrice() {
-        return this.products.map(p => p.price).reduce((p, r) => p + r, 0);
+        return this.orderDetails.map(p => p.price).reduce((p, r) => p + r, 0);
     }
 }

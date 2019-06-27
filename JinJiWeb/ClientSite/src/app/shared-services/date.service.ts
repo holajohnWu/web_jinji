@@ -28,4 +28,14 @@ export class DateService {
   getYmList(): Observable<Ymd[]> {
     return of(this.monthList);
   }
+
+  getYmdList(year, month) {
+    var date = new Date(year, month - 1, 1);
+    var days: Ymd[] = [];
+    while (date.getMonth() === month - 1) {
+      days.push({ year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() } as Ymd);
+      date.setDate(date.getDate() + 1);
+    }
+    return days;
+  }
 }

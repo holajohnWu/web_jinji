@@ -1,46 +1,99 @@
 <div class="page container-fluid p-0 m-0">
-  <div class="row page-body bg-orange mx-0">
-    <div class="col-12">
+  <div class="row page-body m-0">
+    <div class="col-12 p-0">
       <input type="month" class="form-control" id="cDate" name="cDate" [ngModel]="cDate|date:'yyyy-MM'"
-        (input)="cDate = $event.target.value" placeholder="1911/1">
+        (input)="onMonthChange($event.target.value)" placeholder="1911/1">
     </div>
-    <div class="col-12">
+    <div class="col-12 p-0">
       <div class="card card-summary bg-success text-white">
         <div class="card-header">
-          總結
+          月結算
         </div>
         <div class="card-body text-success">
-          <div class="card-text">123</div>
+          <div class="card-text">{{monthSummary}}</div>
         </div>
       </div>
     </div>
-    <div class="col-12">
+    <div class="col-12 p-0">
       <div class="card">
-        <div class="card-body p-0 m-0">
+        <div class="card-body p-0">
           <div class="d-container">
-            <div *ngFor="let key of cOrderMapKey" class="card card-day text-white bg-warning">
-              <div class="card-header">
-                {{key}}
-              </div>
-              <div class="card-body p-0">
-                <div class="o-container">
-                  <div *ngFor="let o of cOrderMap.get(key)" class="card text-dark">
-                    <div class="card-body p-0 m-0">
-                      <div class="card card-o">
-                        <div class="card-header text-center">
-                          {{totalPrice(o)}}
-                        </div>
-                        <div class="card-body p-0 overflow-auto">
-                          <ul class="list-group">
-                            <li *ngFor="let p of o.products" class="list-group-item">{{p.name}}</li>
-                          </ul>
+            <ng-container *ngIf="cOrderMap">
+              <div *ngFor="let key of dayList; let isOddDay=odd" class="card card-day text-white" 
+                [class.bg-warning]="isOddDay" [class.bg-info]="!isOddDay">
+                <div class="card-header">
+                  {{key.year}}-{{key.month}}-{{key.day}}
+                </div>
+                <ng-container *ngIf="cOrderMap.get(key.year+'-'+key.month+'-'+key.day); let daySummary">
+                  <div class="card-body p-0">
+                    <div class="o-container col-12 p-0">
+                      <div class="container-fluid">
+                        <div class="row">
+                          <div class="col-4 p-0">
+                            <div class="card text-dark">
+                              <div class="card-body p-0">
+                                <div class="card card-o">
+                                  <div class="card-header text-center">
+                                    銷售列表
+                                  </div>
+                                  <div class="card-body p-0 overflow-auto">
+                                    <ul class="list-group">
+                                      <li class="list-group-item" *ngFor="let itemKey of daySummary.orderDetailsKeys">
+                                        {{daySummary.orderDetails.get(itemKey)[0].name}}：{{daySummary.orderDetails.get(itemKey).length}}
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-4 p-0">
+                            <div class="card text-dark">
+                              <div class="card-body p-0">
+                                <div class="card card-o">
+                                  <div class="card-header text-center">
+                                    耗材列表
+                                  </div>
+                                  <div class="card-body p-0 overflow-auto">
+                                    <ul class="list-group">
+                                      <li class="list-group-item" *ngFor="let itemKey of daySummary.consumableCostKeys">
+                                        {{daySummary.consumableCosts?.get(itemKey)[0].name}}：{{daySummary.consumableCosts?.get(itemKey).length}}
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-4 p-0">
+                            <div class="card text-dark">
+                              <div class="card-body p-0">
+                                <div class="card card-o">
+                                  <div class="card-header text-center">
+                                    每日支出
+                                  </div>
+                                  <div class="card-body p-0 overflow-auto">
+                                    <ul class="list-group">
+                                      <li class="list-group-item"
+                                        *ngFor="let itemKey of daySummary.consumablePerDayKeys">
+                                        {{daySummary.consumablePerDays?.get(itemKey)[0].name}}：{{daySummary.consumablePerDays?.get(itemKey).length}}
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                  <div class="card-footer">
+                    日結算：{{daySummary.dayBalance}}
+                  </div>
+                </ng-container>
               </div>
-            </div>
+            </ng-container>
           </div>
         </div>
       </div>
