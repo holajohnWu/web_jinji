@@ -2,42 +2,39 @@ import { Injectable } from '@angular/core';
 import { Consumable, ConsumableType } from '../shared-models/consumable';
 import { Observable, of } from 'rxjs';
 import { NameValuePair } from '../shared-models/name-value-pair';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsumableService {
 
-  consumables: Consumable[] = [];
+  url = 'api/Consumable';
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
-  getAll(year: number = 0, month: number = 0, day: number = 0): Observable<Consumable[]> {
-    return of(this.consumables.filter(c =>
-      (year == 0 || c.year == year)
-      && (month == 0 || c.month == month)
-      && (day == 0 || c.day == day)
-    ));
+  getAll(year: number = null, month: number = null, day: number = null): Observable<Consumable[]> {
+    var queryStrAry = [];
+    if (year != null) {
+      queryStrAry.push(`year=${year}`)
+    }
+
+    if (month != null) {
+      queryStrAry.push(`month=${month}`)
+    }
+
+    if (day != null) {
+      queryStrAry.push(`day=${day}`)
+    }
+
+    return this.httpClient.get<Consumable[]>(`${this.url}?${queryStrAry.join('&')}`);
   }
 
   save(consumable: Consumable): Observable<Consumable> {
-    consumable.year = consumable.date.getFullYear();
-    consumable.month = consumable.date.getMonth() + 1;
-    consumable.day = consumable.date.getDate();
-
-    if (!consumable.id) {
-      consumable.id = Math.floor(Math.random() * 100000000);
-      this.consumables.push(consumable);
-    } else {
-      var index = this.consumables.findIndex(p => p.id == consumable.id);
-      this.consumables.splice(index, 1, consumable);
-    }
-
-    return of(consumable);
+    return this.httpClient.post<Consumable>(this.url, JSON.stringify(consumable));
   }
 
   getConsumableTypes(): Observable<NameValuePair[]> {
-
     let enumValues: Array<NameValuePair> = [];
 
     for (let value in ConsumableType) {
@@ -47,5 +44,9 @@ export class ConsumableService {
     }
 
     return of(enumValues);
+  }
+
+  delete(id: number): Observable<boolean> {
+    return this.httpClient.delete<boolean>(`${this.url}/${id}`);
   }
 }

@@ -1,33 +1,31 @@
-<div class="page container-fluid">
-  <div class="row page-header">
-  </div>
-  <div class="row page-body">
-    <div class="col-6">
-      <div class="card">
+<div class="page container-fluid p-0 m-0">
+  <div class="row page-body m-0">
+    <div class="col-6 p-0">
+      <div class="card bg-warning text-white">
         <div class="card-header">
           <div class="row">
-            <div class="col-6">
+            <div class="col-sm-6">
               <h5>餐點清單</h5>
             </div>
-            <div class="col-6 text-right pr-0">
-              <button type="button" class="btn btn-info" (click)="newProduct()">新增餐點</button>
+            <div class="col-sm-6 text-right pr-0">
+              <button type="button" class="btn btn-light" (click)="newProduct()">新增餐點</button>
             </div>
           </div>
         </div>
 
         <div class="card-body p-0">
           <div class="list-group">
-            <button *ngFor="let p of products | async" type="button" class="list-group-item list-group-item-action"
+            <button *ngFor="let p of products$ | async" type="button" class="list-group-item list-group-item-action"
               (click)="showDetail(p)">{{p.name}}</button>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-6">
+    <div class="col-6 p-0">
       <div class="card">
         <div class="card-header">
           <div class="row">
-            <div class="col-6">
+            <div class="col-12">
               <h5>餐點細節</h5>
             </div>
           </div>
@@ -56,8 +54,10 @@
                 placeholder="成本" required>
             </div>
             <div class="form-group text-right">
+              <button *ngIf="cProduct.id" type="button" class="btn btn-danger mr-2"
+                (click)="delete(cProduct.id)">刪除</button>
               <button type="button" [disabled]="!pForm.form.valid" class="btn btn-primary"
-                (click)="save(pForm.form)">儲存</button>
+                (click)="save()">儲存</button>
             </div>
           </form>
         </div>

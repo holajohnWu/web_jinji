@@ -1,22 +1,20 @@
-<div class="page container-fluid">
-  <div class="row page-header">
-  </div>
-  <div class="row page-body">
-    <div class="col-6">
-      <div class="card">
+<div class="page container-fluid p-0 m-0">
+  <div class="row page-body m-0">
+    <div class="col-6 p-0">
+      <div class="card bg-warning text-white">
         <div class="card-header">
           <div class="row">
-            <div class="col-4">
+            <div class="col-sm-4 mt-1">
               <h5>耗材清單</h5>
             </div>
-            <div class="col-4">
+            <div class="col-sm-4 mt-1">
               <select class="form-control" id="ym" name="ym" [(ngModel)]="currentMonth" (change)="loadConsumable()">
                 <option value=undefined>選擇月份</option>
-                <option *ngFor="let date of dateService.getYmList() | async" [ngValue]="date">{{date.year}}/{{date.month}}</option>
+                <option *ngFor="let date of ymList" [ngValue]="date">{{date.year}}/{{date.month}}</option>
               </select>
             </div>
-            <div class="col-4 text-right pr-0">
-              <button type="button" class="btn btn-info" (click)="newConsumable()">新增耗材</button>
+            <div class="col-sm-4 text-right mt-1">
+              <button type="button" class="btn btn-light" (click)="newConsumable()">新增耗材</button>
             </div>
           </div>
         </div>
@@ -24,12 +22,16 @@
         <div class="card-body p-0">
           <div class="list-group">
             <button *ngFor="let c of consumables$ | async" type="button" class="list-group-item list-group-item-action"
-              (click)="showDetail(c)">{{c.name}}</button>
+              (click)="showDetail(c)">
+                <label class="col-sm-2">{{c.month}}/{{c.day}}</label>
+                <label class="col-sm-5">{{c.name}}</label>
+                <label class="col-sm-5 text-right">${{c.cost}}</label>
+              </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-6">
+    <div class="col-6 p-0">
       <div class="card">
         <div class="card-header">
           <div class="row">
@@ -70,8 +72,10 @@
                 placeholder="成本" required>
             </div>
             <div class="form-group text-right">
+              <button *ngIf="cConsumable.id" type="button" class="btn btn-danger mr-2"
+                (click)="delete(cConsumable.id)">刪除</button>
               <button type="button" [disabled]="!cForm.form.valid" class="btn btn-primary"
-                (click)="save(cForm.form)">儲存</button>
+                (click)="save()">儲存</button>
             </div>
           </form>
         </div>

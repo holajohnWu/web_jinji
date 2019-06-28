@@ -13,5 +13,9 @@ export class Consumable {
     name: string;
     description: string;
     cost: number;
-    date: Date = new Date();
+    date: string;
+
+    constructor(date: Date) {
+        this.date = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    }
 }

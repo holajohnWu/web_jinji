@@ -1,0 +1,24 @@
+.card-body {
+    overflow-x: scroll;
+
+    .d-container {
+        display: block;
+        height: 100vh;
+        
+        .card-day {
+            .o-container {
+                display: inline-flex; 
+                
+                .card-o {
+                    height: 20rem;
+                }
+            }
+        }
+    }
+}
+
+.card-summary {
+    .card-body {
+        background-color: white;
+    }
+}
