@@ -2,9 +2,8 @@
   <div class="row page-body m-0">
     <div class="page-body-container">
       <div class="col-12 p-0">
-        <input type="date" class="form-control" id="cDate" name="cDate"
-          [ngModel]="cDate|date:'yyyy-MM-dd'" (input)="onDateChange($event.target.value)"
-          placeholder="1911/1/1">
+        <input type="date" class="form-control" id="cDate" name="cDate" [ngModel]="cDate|date:'yyyy-MM-dd'"
+          (input)="onDateChange($event.target.value)" placeholder="1911/1/1">
       </div>
       <div class="col-12 p-0">
         <div class="card">
@@ -14,8 +13,8 @@
           <div class="card-body p-0">
             <div class="p-container">
               <div class="list-group list-group-horizontal">
-                <button *ngFor="let p of products$ | async" type="button"
-                  class="btn btn-outline-warning" (click)="insertProduct(p)">{{p.name}}</button>
+                <button *ngFor="let p of products$ | async" type="button" class="btn btn-outline-dark"
+                  (click)="insertProduct(p)"><h5><b>{{p.name}}</b></h5></button>
               </div>
             </div>
           </div>
@@ -29,15 +28,20 @@
           <div class="card-body p-0">
             <div class="p-container">
               <div class="list-group list-group-horizontal">
-                <button *ngFor="let p of cOrder.orderDetails; let i=index" type="button"
-                  class="btn btn-light" (click)="removeProduct(i)">{{p.name}}</button>
+                <button *ngFor="let p of cOrder.orderDetails; let i=index" type="button" class="btn btn-light"
+                  (click)="removeProduct(i)">{{p.name}}</button>
               </div>
             </div>
           </div>
           <div class="card-footer">
             <div class="row">
               <div class="col-10">
-                <h5>$：{{cOrder.totalPrice}}</h5>
+                <div class="form-group row">
+                  <label for="sum" class="col-sm-1 col-form-label">$:</label>
+                  <div class="col-sm-5">
+                    <input class="form-control" type="number" id="sum" name="sum" [(ngModel)]="cOrder.sum" />
+                  </div>
+                </div>
               </div>
               <div class="col-2 text-right">
                 <button class="btn btn-light" (click)="saveOrder()">
@@ -55,9 +59,10 @@
           </div>
           <div class="card-body p-0">
             <div class="o-container">
-              <div *ngFor="let o of cOrders$ | async; let i=index; let isOddRecord=odd" class="card" [class.text-white]="isOddRecord" [class.bg-secondary]="isOddRecord">
+              <div *ngFor="let o of cOrders$ | async; let i=index; let isOddRecord=odd" class="card"
+                [class.text-white]="isOddRecord" [class.bg-secondary]="isOddRecord">
                 <div class="card-header text-center">
-                  {{totalPrice(o)}}
+                  {{o.sum}}
                 </div>
                 <div class="card-body p-0 overflow-auto">
                   <ul class="list-group">

@@ -5,6 +5,9 @@ import { ConsumableService } from '../shared-services/consumable.service';
 import { OrderDetail } from '../shared-models/order-detail';
 import { ConsumableType, Consumable } from '../shared-models/consumable';
 import { DateService, Ymd } from '../shared-services/date.service';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+
+import * as $ from 'jquery';
 
 class DaySummary {
   year: number;
@@ -57,9 +60,15 @@ class DaySummary {
 })
 export class BalanceComponent implements OnInit {
 
+  @BlockUI() blockUI: NgBlockUI;
+
+  monthOrders: Order[] = [];
+  monthConsumables: Consumable[] = [];
+
   cDate = new Date();
   cOrderMap: Map<string, DaySummary>;
   dayList: Ymd[];
+  oData: any;
 
   constructor(public orderService: OrderService,
     public consumableService: ConsumableService,
@@ -68,27 +77,31 @@ export class BalanceComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.blockUI.start();
     await this.initData(this.cDate.getFullYear(), this.cDate.getMonth() + 1);
+    this.blockUI.stop();
   }
 
   private async initData(year: number, month: number) {
-    var orders = await this.orderService.getAll(year, month).toPromise();
-    if (!orders) {
-      orders = [];
+    this.monthOrders = await this.orderService.getAll(year, month).toPromise();
+    if (!this.monthOrders) {
+      this.monthOrders = [];
     }
 
-    var consumables = await this.consumableService.getAll(year, month).toPromise();
-    if (!consumables) {
-      consumables = [];
+    this.monthConsumables = await this.consumableService.getAll(year, month).toPromise();
+    if (!this.monthConsumables) {
+      this.monthConsumables = [];
     }
 
     this.cOrderMap = new Map(this.dayList.map((o, i, a): [string, DaySummary] =>
       [`${o.year}-${o.month}-${o.day}`,
       new DaySummary(o.year, o.month, o.day,
-        orders.filter(r => r.year == o.year && r.month == o.month && r.day == o.day)
+        this.monthOrders.filter(r => r.year == o.year && r.month == o.month && r.day == o.day)
           .map(o => o.orderDetails)
           .reduce((previous, current) => previous.concat(current), []),
-        consumables.filter(c => c.year == o.year && c.month == o.month && c.day == o.day))]));
+        this.monthConsumables.filter(c => c.year == o.year && c.month == o.month && c.day == o.day))]));
+
+    this.monthSummary();
   }
 
   public onMonthChange(date: string) {
@@ -103,10 +116,10 @@ export class BalanceComponent implements OnInit {
     return o.orderDetails.map(p => p.price).reduce((p, r) => p + r, 0);
   }
 
-  get monthSummary() {
+  async monthSummary() {
     if (this.cOrderMap) {
       var oAry = Array.from(this.cOrderMap.values());
-      var oData = oAry.map(o => {
+      this.oData = oAry.map(o => {
         return {
           orderDetails: Array.from(o.orderDetails.values())
             .reduce((p, c) => p.concat(c), []),
@@ -118,21 +131,52 @@ export class BalanceComponent implements OnInit {
       })
 
       var totalPrice =
-        oData.map(o => {
+        this.oData.map(o => {
           return o.orderDetails.map(o => o.price).reduce((p, c) => p + c, 0) -
             o.consumablePerDayCosts.map(c => c.cost).reduce((p, c) => p + c, 0);
         })
           .reduce((p, c) => p + c, 0);
 
       var totalCost =
-        oData.map(o => {
+        this.oData.map(o => {
           return o.orderDetails.map(o => o.cost).reduce((p, c) => p + c, 0);
         })
           .reduce((p, c) => p + c, 0);
 
-          console.log(totalCost);
+      var summary1 = `營業額：${(totalPrice | 0)}，盈餘：${(totalPrice | 0) - (totalCost | 0)}`;
+
+      var oDetailsSummary = '';
+      var orderDetails = this.monthOrders.map(o => o.orderDetails).reduce((p, c) => p.concat(c), []);
+      var totalDetailMap = this.initOrderDetailMapByName(orderDetails);
+      for (let key of Array.from(totalDetailMap.keys())) {
+        oDetailsSummary += `<button type="button" class="btn btn-primary mr-1 mb-1">
+        ${key} <span class="badge badge-light">${totalDetailMap.get(key).length}</span>
+        </button>`;
+      }
+
+      var oConsuamblesSummary = '';
+      var orderConsumables = this.monthConsumables.reduce((p, c) => p.concat(c), []);
+      var totalConsumalbeMap = this.initOrderDetailMapByName(orderConsumables);
+      for (let key of Array.from(totalConsumalbeMap.keys())) {
+        oConsuamblesSummary += `<button type="button" class="btn btn-danger mr-1 mb-1">
+        ${key} <span class="badge badge-light">${totalConsumalbeMap.get(key).length}</span>
+        </button>`;
+      }
+
+      $('#month-summary-balance').append(`<h4>${summary1}</h4>`);
+      $('#month-summary-details').append(oDetailsSummary);
+      $('#month-summary-consumables').append(oConsuamblesSummary);
+    }
+  }
+
+  private initOrderDetailMapByName(orderDetails: OrderDetail[]) {
+    if (!orderDetails) {
+      return new Map();
     }
 
-    return `營業額：${(totalPrice | 0)}，盈餘：${(totalPrice | 0) - (totalCost | 0)}`;
+    return new Map(orderDetails.map((v, i, a): [string, OrderDetail[]] => [
+      v.name,
+      a.filter(o => o.name == v.name)
+    ]));
   }
 }

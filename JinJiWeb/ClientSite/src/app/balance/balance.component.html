@@ -9,8 +9,21 @@
         <div class="card-header">
           月結算
         </div>
-        <div class="card-body text-success">
-          <div class="card-text">{{monthSummary}}</div>
+        <div class="card-body text-dark">
+          <div id="month-summary" class="card-text container-fluid">
+            <div class="row">
+              <div id='month-summary-balance' class="col-12">
+              </div>
+            </div>
+            <div class="row">
+              <div id='month-summary-details' class="col-12">
+              </div>
+            </div>
+            <div class="row">
+              <div id='month-summary-consumables' class="col-12">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -19,7 +32,7 @@
         <div class="card-body p-0">
           <div class="d-container">
             <ng-container *ngIf="cOrderMap">
-              <div *ngFor="let key of dayList; let isOddDay=odd" class="card card-day text-white" 
+              <div *ngFor="let key of dayList; let isOddDay=odd" class="card card-day text-white"
                 [class.bg-warning]="isOddDay" [class.bg-info]="!isOddDay">
                 <div class="card-header">
                   {{key.year}}-{{key.month}}-{{key.day}}
@@ -38,8 +51,11 @@
                                   </div>
                                   <div class="card-body p-0 overflow-auto">
                                     <ul class="list-group">
-                                      <li class="list-group-item" *ngFor="let itemKey of daySummary.orderDetailsKeys">
-                                        {{daySummary.orderDetails.get(itemKey)[0].name}}：{{daySummary.orderDetails.get(itemKey).length}}
+                                      <li class="list-group-item d-flex justify-content-between align-items-center"
+                                        *ngFor="let itemKey of daySummary.orderDetailsKeys">
+                                        {{daySummary.orderDetails.get(itemKey)[0].name}}
+                                        <span
+                                          class="badge badge-light badge-pill">{{daySummary.orderDetails.get(itemKey).length}}</span>
                                       </li>
                                     </ul>
                                   </div>
@@ -56,8 +72,11 @@
                                   </div>
                                   <div class="card-body p-0 overflow-auto">
                                     <ul class="list-group">
-                                      <li class="list-group-item" *ngFor="let itemKey of daySummary.consumableCostKeys">
-                                        {{daySummary.consumableCosts?.get(itemKey)[0].name}}：{{daySummary.consumableCosts?.get(itemKey).length}}
+                                      <li class="list-group-item d-flex justify-content-between align-items-center"
+                                        *ngFor="let itemKey of daySummary.consumableCostKeys">
+                                        {{daySummary.consumableCosts?.get(itemKey)[0].name}}
+                                        <span
+                                          class="badge badge-light badge-pill">{{daySummary.consumableCosts?.get(itemKey).length}}</span>
                                       </li>
                                     </ul>
                                   </div>
@@ -74,9 +93,11 @@
                                   </div>
                                   <div class="card-body p-0 overflow-auto">
                                     <ul class="list-group">
-                                      <li class="list-group-item"
+                                      <li class="list-group-item d-flex justify-content-between align-items-center"
                                         *ngFor="let itemKey of daySummary.consumablePerDayKeys">
-                                        {{daySummary.consumablePerDays?.get(itemKey)[0].name}}：{{daySummary.consumablePerDays?.get(itemKey).length}}
+                                        {{daySummary.consumablePerDays?.get(itemKey)[0].name}}
+                                        <span
+                                          class="badge badge-light badge-pill">{{daySummary.consumablePerDays?.get(itemKey).length}}</span>
                                       </li>
                                     </ul>
                                   </div>

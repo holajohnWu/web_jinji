@@ -4,6 +4,8 @@ import { Consumable } from '../shared-models/consumable';
 import { DateService, Ymd } from '../shared-services/date.service';
 import { cloneDeep } from 'lodash';
 import { Observable } from 'rxjs';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-consumable',
@@ -11,6 +13,8 @@ import { Observable } from 'rxjs';
   styleUrls: ['./consumable.component.scss']
 })
 export class ConsumableComponent implements OnInit {
+
+  @BlockUI() blockUI: NgBlockUI;
 
   public consumables$: Observable<Consumable[]>;
   public cConsumable = new Consumable(new Date());
@@ -38,7 +42,9 @@ export class ConsumableComponent implements OnInit {
     this.cConsumable.month = parseInt(dateAry[1]);
     this.cConsumable.day = parseInt(dateAry[2]);
 
+    this.blockUI.start();
     this.consumableService.save(this.cConsumable)
+      .pipe(finalize(() => this.blockUI.stop()))
       .subscribe(r => {
         this.loadConsumable();
         this.cConsumable = new Consumable(new Date());
@@ -46,7 +52,9 @@ export class ConsumableComponent implements OnInit {
   }
 
   delete(id: number) {
+    this.blockUI.start();
     this.consumableService.delete(id)
+      .pipe(finalize(() => this.blockUI.stop()))
       .subscribe(r => {
         this.loadConsumable();
         this.cConsumable = new Consumable(new Date());

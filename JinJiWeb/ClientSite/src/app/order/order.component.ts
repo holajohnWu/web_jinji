@@ -6,6 +6,8 @@ import { cloneDeep } from 'lodash';
 import { OrderService } from '../shared-services/order.service';
 import { Observable } from 'rxjs';
 import { OrderDetail } from '../shared-models/order-detail';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-order',
@@ -13,6 +15,8 @@ import { OrderDetail } from '../shared-models/order-detail';
   styleUrls: ['./order.component.scss']
 })
 export class OrderComponent implements OnInit {
+
+  @BlockUI() blockUI: NgBlockUI;
 
   products$: Observable<Product[]>;
 
@@ -39,14 +43,18 @@ export class OrderComponent implements OnInit {
     delete model['id'];
 
     this.cOrder.orderDetails.push(model);
+    this.cOrder.sum = this.cOrder.totalPrice;
   }
 
   removeProduct(i: number) {
     this.cOrder.orderDetails.splice(i, 1);
+    this.cOrder.sum = this.cOrder.totalPrice;
   }
 
   saveOrder() {
+    this.blockUI.start();
     this.orderService.save(this.cOrder)
+      .pipe(finalize(() => this.blockUI.stop()))
       .subscribe(o => {
         this.initOrders();
         this.cOrder = new Order();
@@ -54,7 +62,9 @@ export class OrderComponent implements OnInit {
   }
 
   removeOrder(id: number) {
+    this.blockUI.start();
     this.orderService.remove(id)
+      .pipe(finalize(() => this.blockUI.stop()))
       .subscribe(o => {
         this.initOrders();
       });
@@ -64,9 +74,5 @@ export class OrderComponent implements OnInit {
     var dateAry = date.split('-');
     this.cDate = new Date(parseInt(dateAry[0]), parseInt(dateAry[1]) - 1, parseInt(dateAry[2]));
     this.initOrders();
-  }
-
-  totalPrice(o: Order) {
-    return o.orderDetails.map(p => p.price).reduce((p, r) => p + r, 0);
   }
 }

@@ -5,6 +5,7 @@ export class Order {
     year: number;
     month: number;
     day: number;
+    sum: number = 0;
 
     constructor(date: Date = null) {
         if(!date) {

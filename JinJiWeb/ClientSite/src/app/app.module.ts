@@ -10,6 +10,7 @@ import { OrderModule } from './order/order.module';
 import { BalanceModule } from './balance/balance.module';
 import { HttpHeaderInterceptor } from './shared-utils/http-header.interceptor';
 import { FormsModule } from '@angular/forms';
+import { BlockUIModule } from 'ng-block-ui';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,10 @@ import { FormsModule } from '@angular/forms';
     ConsumableModule,
     OrderModule,
     BalanceModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BlockUIModule.forRoot({
+      message: 'Loading..........'
+    })
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpHeaderInterceptor, multi: true }

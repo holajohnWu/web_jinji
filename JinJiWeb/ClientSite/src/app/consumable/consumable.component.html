@@ -4,16 +4,16 @@
       <div class="card bg-warning text-white">
         <div class="card-header">
           <div class="row">
-            <div class="col-4">
+            <div class="col-sm-4 mt-1">
               <h5>耗材清單</h5>
             </div>
-            <div class="col-4">
+            <div class="col-sm-4 mt-1">
               <select class="form-control" id="ym" name="ym" [(ngModel)]="currentMonth" (change)="loadConsumable()">
                 <option value=undefined>選擇月份</option>
                 <option *ngFor="let date of ymList" [ngValue]="date">{{date.year}}/{{date.month}}</option>
               </select>
             </div>
-            <div class="col-4 text-right pr-0">
+            <div class="col-sm-4 text-right mt-1">
               <button type="button" class="btn btn-light" (click)="newConsumable()">新增耗材</button>
             </div>
           </div>
@@ -23,9 +23,9 @@
           <div class="list-group">
             <button *ngFor="let c of consumables$ | async" type="button" class="list-group-item list-group-item-action"
               (click)="showDetail(c)">
-                <label class="col-2">{{c.month}}/{{c.day}}</label>
-                <label class="col-5">{{c.name}}</label>
-                <label class="col-5 text-right">${{c.cost}}</label>
+                <label class="col-sm-2">{{c.month}}/{{c.day}}</label>
+                <label class="col-sm-5">{{c.name}}</label>
+                <label class="col-sm-5 text-right">${{c.cost}}</label>
               </button>
           </div>
         </div>

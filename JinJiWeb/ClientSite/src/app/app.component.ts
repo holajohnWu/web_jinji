@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from './shared-services/auth.service';
 import { Router } from '@angular/router';
+import * as $ from 'jquery';
 
 class Account {
   account: string;
@@ -15,11 +16,17 @@ class Account {
 export class AppComponent {
   title = 'ClientSite';
 
-  account = new Account();
+  account = { account: "Wuhome157", password: "Wu12345678@" } as Account;
 
   constructor(public authService: AuthService,
     private router: Router) {
+  }
 
+  ToggleNavBar() {
+    let element: HTMLElement = document.getElementsByClassName('navbar-toggler')[0] as HTMLElement;
+    if (element.getAttribute('aria-expanded') == 'true') {
+      element.click();
+    }
   }
 
   login() {
